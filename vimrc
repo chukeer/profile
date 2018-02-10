@@ -36,6 +36,7 @@ Plugin 'dgryski/vim-godef'
 Plugin 'majutsushi/tagbar'
 Plugin 'fatih/vim-go'
 Plugin 'junegunn/fzf'
+Plugin 'junegunn/fzf.vim'
 Plugin 'davidhalter/jedi-vim'
 
 " All of your Plugins must be added before the following line
@@ -120,10 +121,8 @@ let mapleader = ","
 noremap <C-v>s :vertical resize 
 noremap <C-s> :resize
 nnoremap <leader>n :set number!<CR>
-nnoremap <leader>w :cw<CR>
 noremap <C-n> :NERDTreeTabsToggle<CR>
 noremap <leader>p :set paste!<CR>:set paste?<CR>
-nnoremap <leader>q :cw<CR>
 noremap <silent> <F9> <ESC>:noh<CR>
 nnoremap <silent> <leader>a :A<cr>
 nnoremap <leader>vs :vertival resize 
@@ -132,6 +131,10 @@ nnoremap <leader>h :set hls!<cr>
 nnoremap <silent> <leader>T :!ctags.sh . &<cr>
 nnoremap * :set hls<cr>*
 nnoremap # :set hls<cr>#
+nnoremap <leader><leader>c :tabc<cr>
+nnoremap <leader><leader>n :tabnew<cr>
+nnoremap <leader><leader>r :so ~/.vimrc<cr>
+nnoremap <C-LeftMouse> :tjump<cr>
 
 " 高亮光标所在单词开关
 function! HighlightCursorWordToggle()
@@ -220,8 +223,8 @@ endfu
 nnoremap <leader>f :call FindUnderCursor("file")<cr>
 "nnoremap <leader>t :call FindUnderCursor("tag")<cr>
 " 搜索当前文件的tag，需要实现建立tags文件
-nnoremap <leader>@ :CtrlPBufTag<cr>
-nnoremap <leader>t :CtrlPTag<cr>
+"nnoremap <leader>@ :CtrlPBufTag<cr>
+"nnoremap <leader>t :CtrlPTag<cr>
 
 " 遍历窗口，找到名字不为NERD_tree的窗口，并在该窗口执行ctrlp
 " 若窗口都为NERD_tree，则在靠右的窗口打开ctrlp
@@ -245,6 +248,9 @@ let g:ctrlp_cmd = 'call CtrlPCommand("CtrlP")'
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""
 "nnoremap <leader>z :FZF<cr>
 nnoremap <leader>z :call CtrlPCommand("FZF")<cr>
+nnoremap <leader>@ :call CtrlPCommand("BTags")<cr>
+nnoremap <leader>t :call CtrlPCommand("Tags")<cr>
+nnoremap <leader>B :call CtrlPCommand("Buffers")<cr>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""
 " nerdtree
@@ -432,9 +438,11 @@ function! ToggleMouse()
     if &mouse == 'a'
         " disable mouse
         set mouse=
+        echo "mouse off"
     else
         " enable mouse everywhere
         set mouse=a
+        echo "mouse on"
     endif
 endfunc
 nnoremap <leader>m :call ToggleMouse()<cr>
@@ -450,3 +458,14 @@ let g:ctrlsf_extra_backend_args = {
     \ 'ack': '--cc --cpp'
     \ }
 "nmap <C-F> <Plug>CtrlSFPrompt
+
+" toggle quickfix
+function! ToggleQuickFix()
+    let nr = winnr("$")
+    cwindow
+    let nr2 = winnr("$")
+    if nr == nr2
+        cclose
+    endif
+endfunc
+nnoremap <leader>q :call ToggleQuickFix()<cr>
